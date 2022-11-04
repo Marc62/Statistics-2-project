@@ -6,12 +6,13 @@ function x = tSim(T,rep)
      c01 = tinv(alpha , df); % left tail quantile, for loc-0 scale-1
      truec = loc+scale*c01; % left tail quantile c
      ES01 = -tpdf(c01,df)/tcdf(c01,df) * (df+c01^2)/(df-1);
-     trueES = loc+scale*ES01 % true theoretical ES
+     trueES = loc+scale*ES01; % true theoretical ES
     for i=1:rep
-        data=loc+scale*trnd(df,T,1)
+        data=loc+scale*trnd(df,T,1); DoF = mleT(data,[df loc scale]);
         for b=1:B
-            ind=unidrnd(T,[T,1]); bootsamp=data(ind);
-            % % bootsamp = binornd(1 , phat , [ n , 1 ] ) ; %
+            %ind=unidrnd(T,[T,1]);
+            %bootsamp=data(ind);
+            bootsamp = trnd(DoF(1), T,1) ; 
             VaR=quantile (bootsamp, alpha);
             temp=data(data<=VaR); bootphat(b)=mean(temp);   
         end
